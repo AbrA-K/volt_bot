@@ -9,7 +9,7 @@ services:
     environment:
       SURR_URL: "db:8000"
   db:
-    build: .
-    command: "start --user root --pass root --bind 0.0.0.0:8000 file://data/srdb.db"
+    build: surrealdb/surrealdb:latest
+    command: "start --user ${SURR_USER} --pass ${SURR_PASS} --bind 0.0.0.0:8000 file://data/srdb.db"
     ports: 
       - "8000:8000"
