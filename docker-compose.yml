@@ -1,0 +1,15 @@
+version: '3'
+services:
+  bot:
+    image: "rust"
+    volumes:
+      - .:/bot
+    working_dir: /bot
+    command: cargo r -r
+    environment:
+      SURR_URL: "db:8000"
+  db:
+    build: .
+    command: "start --user root --pass root --bind 0.0.0.0:8000 file://data/srdb.db"
+    ports: 
+      - "8000:8000"
