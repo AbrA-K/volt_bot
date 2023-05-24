@@ -18,10 +18,6 @@ use serenity::prelude::*;
 
 use serde::{Deserialize, Serialize};
 
-// this file Handles getting getting commands and creating the output
-// actually playing the game is done in src/volt_flip.rs
-
-// the name will be the ID of the db entry fyi
 #[derive(Debug, Serialize, Deserialize)]
 struct User {
     current_score: usize,
@@ -37,22 +33,23 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
-        let id = interaction
+        let user_id = interaction
             .clone()
             .application_command()
             .unwrap()
             .user
             .id
             .to_string();
+
         if let Interaction::ApplicationCommand(command) = interaction {
             let content = match command.data.name.as_str() {
                 "id" => commands::get_score::get_score(&command.data.options).await,
                 "score" => commands::get_score::get_score(&command.data.options).await,
-                "vanish" => commands::delete_me::delete_me(&id).await,
-                "init" => commands::init_me::init_me(&id).await,
-                "end" => commands::end_game::end_game(&id).await,
-                "print" => commands::print_game::print_game(&id).await,
-                "reveal" => commands::reveal::reveal(&command.data.options, &id).await,
+                "vanish" => commands::delete_me::delete_me(&user_id).await,
+                "init" => commands::init_me::init_me(&user_id).await,
+                "end" => commands::end_game::end_game(&user_id).await,
+                "print" => commands::print_game::print_game(&user_id).await,
+                "reveal" => commands::reveal::reveal(&command.data.options, &user_id).await,
                 _ => "not implemented :(".to_string(),
             };
             if let Err(why) = command
